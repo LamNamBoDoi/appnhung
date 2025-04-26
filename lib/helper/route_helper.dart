@@ -1,8 +1,7 @@
 import 'package:get/get.dart';
 import 'package:hethong/screen/home_screen.dart';
-import 'package:hethong/screen/login_screen.dart';
+import 'package:hethong/screen/login_screen/login_screen.dart';
 import 'package:hethong/screen/splash_screen.dart';
-import 'package:hethong/screen/user_screen.dart';
 
 class RouteHelper {
   static const String initial = '/';
@@ -20,7 +19,6 @@ class RouteHelper {
   static String getLoginRoute() => '$login';
 
   static List<GetPage> routes = [
-    GetPage(name: user, page: () => UserScreen()),
     GetPage(name: home, page: () => HomeScreen()),
     GetPage(name: splash, page: () => SplashScreen()),
     GetPage(name: login, page: () => LoginScreen()),

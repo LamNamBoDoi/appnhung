@@ -8,7 +8,8 @@ import 'package:http/http.dart' as http;
 class UserController extends GetxController implements GetxService {
   bool _loading = false;
   List<User> _users = <User>[];
-
+  User _user = User();
+  User get user => _user;
   bool get loading => _loading;
   List<User> get users => _users;
 
@@ -30,7 +31,6 @@ class UserController extends GetxController implements GetxService {
       var response = await http.get(url);
       if (response.statusCode == 200) {
         List<dynamic> responseData = json.decode(response.body);
-        print(responseData);
 
         _users =
             responseData.map((userData) => User.fromJson(userData)).toList();
@@ -155,5 +155,62 @@ class UserController extends GetxController implements GetxService {
       _loading = false;
       update();
     }
+  }
+
+  List<User> getUserFromMonth(int month, int year) {
+    List<User> newUsers = [];
+
+    DateTime startDate = DateTime(year, month + 1, 1);
+    for (User user in _users) {
+      if (user.user_date != null) {
+        try {
+          DateTime userDate = DateTime.parse(user.user_date!);
+          print(userDate);
+          if (!userDate.isAfter(startDate)) {
+            newUsers.add(user);
+          }
+        } catch (e) {
+          print("Lỗi khi parse ngày: ${user.user_date}");
+        }
+      }
+    }
+
+    print("Tổng user sau tháng $month/$year: ${newUsers.length}");
+    return newUsers;
+  }
+
+  List<User> getStudentCountByClass(String device_dep) {
+    List<User> newUsers = [];
+    if (_users.isEmpty) {
+      getUser();
+    }
+    for (User user in _users) {
+      if (user.device_dep == device_dep) {
+        newUsers.add(user);
+      }
+    }
+    return newUsers;
+  }
+
+  List<User> getNewUsers() {
+    List<User> newUsers = [];
+    getUser();
+    for (User user in _users) {
+      if (user.username == "None" &&
+          user.gender == "None" &&
+          user.serialnumber == "0") {
+        newUsers.add(user);
+        print(user.username);
+      }
+    }
+    return newUsers;
+  }
+
+  void getInfoUser(String email) async {
+    if (_users.isEmpty) {
+      await getUser();
+    }
+    _user = _users.firstWhere((user) => user.email == email);
+    update();
   }
 }

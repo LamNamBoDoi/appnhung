@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:hethong/data/model/body/user.dart';
 import 'package:hethong/data/model/body/users_logs.dart';
 import 'package:hethong/utils/app_constants.dart';
 import 'package:http/http.dart' as http;
@@ -23,31 +24,23 @@ class UserLogsController extends GetxController implements GetxService {
       var url = Uri.parse(AppConstants.BASE_URL + AppConstants.GET_USER_LOGS);
 
       var response = await http.get(url);
-
       if (response.statusCode == 200) {
         List<dynamic> responseData = json.decode(response.body);
         _userlogs = responseData
             .map((userlogsData) => UserLogs.fromJson(userlogsData))
             .toList();
-
-        // Xử lý lọc ngày có điểm danh
         final Set<String> seenDates = {};
         _attendanceDates.clear();
-
         for (var log in _userlogs) {
           if (log.checkindate != null) {
-            // chỉ lấy phần ngày
             String dateStr = log.checkindate!;
             if (!seenDates.contains(dateStr)) {
               seenDates.add(dateStr);
-
-              // Convert sang DateTime và thêm vào danh sách
               DateTime parsedDate = DateFormat('yyyy-MM-dd').parse(dateStr);
               _attendanceDates.add(parsedDate);
             }
           }
         }
-        print(_attendanceDates.length);
       } else {
         throw Exception('Failed to load users');
       }
@@ -68,8 +61,45 @@ class UserLogsController extends GetxController implements GetxService {
     }).toList();
   }
 
-  void addUserLog(UserLogs log) {
-    _userlogs.insert(0, log); // chèn vào đầu danh sách
-    update();
+  Set<String> getDayInMonthByUser(User user, int month, int year) {
+    final Set<String> userAttendanceDays = {};
+    if (_userlogs.isEmpty) {
+      getUsersLogs();
+    }
+    for (UserLogs userLog in _userlogs) {
+      final date = userLog.checkindate != null
+          ? DateTime.parse(userLog.checkindate!)
+          : null;
+      // Kiểm tra tháng và năm khớp
+      if (date?.month == month &&
+          date?.year == year &&
+          userLog.card_uid == user.card_uid) {
+        if (userLog.checkindate != null) {
+          userAttendanceDays.add(userLog.checkindate!);
+        }
+      }
+    }
+
+    return userAttendanceDays;
+  }
+
+  List<UserLogs> getLogsInMonthByUser(User user, int month, int year) {
+    final List<UserLogs> userLogsInMonth = [];
+    if (_userlogs.isEmpty) {
+      getUsersLogs();
+    }
+    for (UserLogs userLog in _userlogs) {
+      final date = userLog.checkindate != null
+          ? DateTime.parse(userLog.checkindate!)
+          : null;
+      if (date?.month == month &&
+          date?.year == year &&
+          userLog.card_uid == user.card_uid) {
+        if (userLog.checkindate != null) {
+          userLogsInMonth.add(userLog);
+        }
+      }
+    }
+    return userLogsInMonth;
   }
 }

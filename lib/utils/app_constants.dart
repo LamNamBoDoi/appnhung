@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AppConstants {
-  static const String BASE_URL = 'http://192.168.1.160/webdiemdanh';
+  static const String BASE_URL = 'http://192.168.33.201/webdiemdanh';
   static const String GET_USER = '/readUser.php';
   static const String GET_DEVICES = '/readDevice.php';
   static const String GET_USER_LOGS = '/read_userlogs.php';

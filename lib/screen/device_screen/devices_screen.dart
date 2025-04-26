@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hethong/controller/devices_controller.dart';
 import 'package:hethong/data/model/body/device.dart';
-import 'package:hethong/screen/device_detail_screen.dart';
+import 'package:hethong/screen/device_screen/widget/device_detail_screen.dart';
 
 class DeviceScreen extends StatefulWidget {
   @override
@@ -50,9 +50,20 @@ class _DeviceScreenState extends State<DeviceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Device List',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.teal,
+        title: const Text(
+          'Danh sách thiết bị',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.teal[700],
+        centerTitle: true,
+        elevation: 4,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+        ),
       ),
       body: Column(
         children: [
@@ -81,7 +92,13 @@ class _DeviceScreenState extends State<DeviceScreen> {
                   },
                   child: (_filteredDevices.isEmpty)
                       ? const Center(
-                          child: CircularProgressIndicator(),
+                          child: Text(
+                            'Không có thiết bị nào',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey,
+                            ),
+                          ),
                         )
                       : ListView.builder(
                           itemCount: _filteredDevices.length,
@@ -179,12 +196,14 @@ class _DeviceScreenState extends State<DeviceScreen> {
                 deviceController.message.value,
                 backgroundColor: Colors.green,
                 colorText: Colors.white,
+                duration: const Duration(seconds: 1),
               );
             } else {
               Get.snackbar(
                 'Đổi chế độ thiết bị thất bại',
                 deviceController.message.value,
                 backgroundColor: Colors.red,
+                duration: const Duration(seconds: 1),
                 colorText: Colors.white,
               );
             }

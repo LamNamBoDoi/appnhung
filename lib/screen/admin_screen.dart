@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hethong/controller/auth_controller.dart';
-import 'package:hethong/screen/login_screen.dart';
+import 'package:hethong/screen/login_screen/login_screen.dart';
 
 class AdminScreen extends StatelessWidget {
   final AuthController authController = Get.find<AuthController>();
@@ -16,12 +16,23 @@ class AdminScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.teal,
+          backgroundColor: Colors.teal[700],
+          centerTitle: true,
+          elevation: 4,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+          ),
           title: const Text('Admin Panel',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white)),
           actions: [
             IconButton(
-              icon: const Icon(Icons.logout),
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.white,
+              ),
               onPressed: () {
                 // Đăng xuất và chuyển hướng đến màn hình đăng nhập
                 Get.off(() => LoginScreen());
@@ -30,8 +41,9 @@ class AdminScreen extends StatelessWidget {
           ],
         ),
         body: GetBuilder<AuthController>(builder: (_) {
-          nameController.text = authController.admin.admin_name!;
-          emailController.text = authController.admin.admin_email!;
+          nameController.text = authController.admin.admin_name ?? "admin";
+          emailController.text =
+              authController.admin.admin_email ?? "admin@gmail.com";
 
           return RefreshIndicator(
             child: Padding(

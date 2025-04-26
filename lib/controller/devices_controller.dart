@@ -68,4 +68,13 @@ class DevicesController extends GetxController implements GetxService {
       return false;
     }
   }
+
+  String getNameDevice(String deviceDep) {
+    for (var device in devices) {
+      if (device.device_dep == deviceDep) {
+        return device.device_name ?? '';
+      }
+    }
+    return '';
+  }
 }
